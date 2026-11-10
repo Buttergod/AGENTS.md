@@ -339,11 +339,185 @@ Review every production interface using four concrete evaluation criteria:
 
 ## 3. SECURITY
 
+To make a website secure, you must implement defense-in-depth across transport encryption, server configurations, authentication, data handling, and infrastructure management. 
+
+---
+
+### 1. Enforce Sitewide Transport Security (HTTPS/TLS)
+* **Encrypt All Traffic:** Secure all website traffic by enforcing sitewide HTTPS using Transport Layer Security (TLS) to prevent eavesdropping and Manipulator-in-the-Middle (MiTM) attacks.
+* **Enforce Full Coverage:** Ensure every single route and asset is only served over HTTPS, as a single unencrypted page or form can compromise the entire application.
+* **Modern Encryption & Ciphers:** Use 2048-bit SHA-256 certificates and explicitly disable outdated, insecure cipher suites (such as RC4 or weak Diffie-Hellman keys) on your web server.
+* **Implement HSTS:** Enable **HTTP Strict Transport Security (HSTS)** with a long `max-age` duration to force browsers to automatically upgrade all HTTP requests to HTTPS, preventing downgrade and interception attacks.
+* **Eliminate Mixed Content:** Verify that all active assets (such as JavaScript files, CSS, and media) are loaded over HTTPS to avoid security warnings and UI degradation.
+
+---
+
+### 2. Configure Security Headers & Server Hardening
+* **Deploy Content Security Policy (CSP):** Implement a strict CSP using nonces or hashes to control which scripts and styles are allowed to execute, effectively neutralizing Cross-Site Scripting (XSS) threats.
+* **Prevent Clickjacking:** Set the `frame-ancestors` directive within your CSP or use `X-Frame-Options` headers (`DENY` or `SAMEORIGIN`) to prevent unauthorized sites from framing your website.
+* **Obscure Server Signatures:** Remove or obscure server identification headers (such as `X-Powered-By` or specific web server version tags) so attackers cannot target version-specific vulnerabilities.
+* **Apply Least-Privilege Process Execution:** Configure web server processes to run under dedicated service accounts with minimal operating system privileges rather than root or Local System accounts.
+
+---
+
+### 3. Implement Secure Authentication & Credentials Hygiene
+* **Hash Passwords Securely:** Never store plaintext passwords; store them using cryptographically strong, one-way salted and peppered algorithms such as **Argon2id** or **Scrypt**.
+* **Protect Secrets & API Keys:** Store database credentials, private API keys, and environment variables in secure secrets managers outside the web root, never hardcoding them in client-side code or public prompts.
+* **Multi-Factor Authentication & Rate Limiting:** Enforce Multi-Factor Authentication (MFA) for administrative and sensitive accounts, while implementing rate limiting and lockout policies on login endpoints to defeat brute-force and credential-stuffing attacks.
+* **Harden Session Cookies:** Configure session cookies with the `HttpOnly` flag to prevent client-side scripts from stealing tokens via XSS, and the `Secure` flag so cookies transmit strictly over HTTPS.
+
+---
+
+### 4. Practice Server-Side Input Validation & Injection Defense
+* **Validate All Inputs Server-Side:** Validate every user input, form field, and API payload on the server for syntax, data type, length, and acceptable range before processing.
+* **Prevent SQL Injection:** Use parameterized queries (prepared statements) and stored procedures for all database queries rather than concatenating user input strings.
+* **Contextual Output Encoding:** Contextually encode output data (such as HTML entity encoding) right before returning it to the client to ensure untrusted inputs are not rendered as executable script code.
+
+---
+
+### 5. Enforce Database Security & Server-Side Access Control
+* **Enable Row-Level Security (RLS):** When using modern backend services (like PostgreSQL or Supabase), enforce Row-Level Security on all database tables so that public API keys cannot be exploited to read or write database content without authorization.
+* **Server-Side Authorization Checks:** Perform all critical business logic and authorization checks (such as paywalls, user roles, and access boundaries) strictly on the server, as client-side checks can be easily manipulated via browser tools.
+* **Principle of Least Privilege:** Restrict database accounts to only the specific permissions and tables necessary for their function.
+
+---
+
+### 6. Manage Infrastructure, Dependencies & Continuous Scans
+* **Deploy Cloud DDoS & WAF Protection:** Utilize Web Application Firewalls (WAF) and Anycast DDoS mitigation services (such as Cloudflare or Akamai) alongside rate limiting to absorb volumetric traffic spikes and block malicious HTTP payloads.
+* **Audit Open-Source Dependencies:** Maintain a Software Bill of Materials (SBOM) and routinely scan third-party libraries using Software Composition Analysis (SCA) tools (such as OWASP Dependency-Check or Snyk) to eliminate supply-chain vulnerabilities and hallucinated packages.
+* **Self-Host Assets:** Download and self-host fonts and static libraries locally rather than linking directly to external CDNs to prevent leaking visitor IP data.
+* **Regular Security Audits:** Conduct regular automated configuration scans, static/dynamic application security testing (SAST/DAST), and professional penetration tests prior to shipping code to production.
 
 
-## 4. FUNCTIONS 
+## 4. FUNCTIONS AND MARKETING
 
+### UX Strategy & User Journey
 
+1. **Conduct Continuous User Research:** Regularly schedule monthly interviews and analyze support tickets to validate real user frustrations.
+2. **Map End-to-End Journeys:** Build flowcharts covering discovery, signup, onboarding, and support rather than optimizing screens in isolation.
+3. **Accelerate Time-to-Value:** Design onboarding workflows that guide users to their first "aha moment" in under two minutes.
+4. **Reduce Cognitive Load (Hick's Law):** Limit choices, set sensible defaults, and use progressive disclosure to prevent decision fatigue.
+5. **Contextual Onboarding:** Display helpful tips only when relevant during a workflow rather than overwhelming users with linear upfront tours.
+6. **Establish Team Exposure Hours:** Require every team member to observe live user research for at least two hours every six weeks.
+7. **Allocate Debt Reduction Capacity:** Reserve 20% of team sprint capacity specifically for addressing technical and design debt.
+8. **Prioritize via Digital Triage:** Evaluate incoming design requests using a repeatable scoring formula based on impact, effort, and risk.
+9. **Map Aspirational Experiences:** Create journey maps of current friction points alongside target ideal states to align cross-functional stakeholders.
+10. **Construct a Design Playbook:** Maintain a centralized repository of core UI patterns, component standards, and accessibility guidelines.
+11. **Align Design Metrics with Business KPIs:** Map UX drivers (such as error rates and task speed) directly to business goals like revenue and support cost savings.
+12. **Hold Weekly Dev-Design Overlaps:** Run short weekly "show-and-tell" sessions where designers and engineers review work-in-progress to align on feasibility.
+13. **Run Usability Tests with 5 Real Users:** Test every new interface flow with five actual users to catch the vast majority of usability flaws early.
+14. **Eliminate UX Dark Patterns:** Remove deceptive popups, pre-checked opt-ins, and hidden cancellation flows to foster long-term customer trust.
+15. **Benchmark via the System Usability Scale (SUS):** Administer 10-question SUS surveys to quantify perceived usability and track improvements over time.
+
+---
+
+### UI Design, Layout & Visual Hierarchy
+
+16. **Enforce a Strict Spacing Scale:** Apply a mathematically consistent spacing grid (such as 4px or 8px) across all layout containers.
+17. **Establish Clear Button Hierarchy:** Limit button styles to one distinct visual pattern per role: primary, secondary, tertiary, and danger.
+18. **Avoid Pure Black Text:** Set long-form body copy in dark grey (e.g., `#4F4F4F`) to improve reading comfort on light backgrounds.
+19. **Restrain Color Palettes:** Use one primary brand color, one accent, and neutral backgrounds rather than chaotic color combinations.
+20. **Use White Space Purposefully:** Leave generous negative space around key elements to create visual breathing room and emphasize calls-to-action.
+21. **Select Distinctive Typography:** Pair a bold display font for headings with a readable sans-serif body typeface featuring taller lowercase x-heights.
+22. **Set Proportional Line Height:** Increase line height as font sizes decrease (aiming for at least 1.5 line height on body text) to optimize legibility.
+23. **Left-Align Paragraph Text:** Left-align body paragraphs and long text blocks to follow natural human reading patterns.
+24. **Eliminate Decorative Emojis in Headings:** Replace functional emojis with proper SVG icons or descriptive text.
+25. **Maintain Iconography Consistency:** Use icons that share a uniform visual weight, stroke width, and rendering style.
+26. **Remove Unnecessary Visual Layering:** Eliminate redundant drop shadows, extra borders, and background fills on single card elements.
+27. **Label Action Buttons Explicitly:** Use clear, specific action labels (e.g., "Delete Location") rather than ambiguous phrases (e.g., "Yes").
+28. **Provide Visible Event Feedback:** Design interactive controls with explicit hover, focus, active, disabled, and loading visual states.
+29. **Avoid Color-Only Status Cues:** Pair colors with text labels, icons, or textures so visual indicators remain accessible to colorblind users.
+30. **Ensure Interactive Touch Targets:** Size all clickable buttons, input fields, and links to a minimum tap target of 24x24 pixels (44x44px on mobile).
+31. **Design Uncomfortable UI States:** Systematically create explicit UI designs for empty states, loading skeletons, partial failures, validation errors, and permission denials.
+32. **Avoid Deeply Nested Containers:** Refrain from wrapping single lines of text inside nested bordered cards.
+33. **Limit Uppercase Text:** Restrict all-caps typography to brief eyebrow labels to prevent text scanning fatigue.
+34. **Strip Out Left-Border Card Accent Lines:** Remove decorative 4px left-border stripes from card containers.
+35. **Reduce Em Dash Frequency:** Replace excessive long em dashes (—) with standard punctuation for clearer, natural sentence flow.
+
+---
+
+### Content Strategy, Authenticity & Copywriting
+
+36. **Draft a 4-Part Brief:** Define brand name, specific offer, target audience, and primary page goal before generating copy.
+37. **Write Conversational Product Copy:** Replace generic buzzwords ("seamless", "empower", "elevate", "cutting-edge") with exact user terminology.
+38. **Pass the "Swap Test":** Ensure homepage copy contains specific numbers, dates, prices, and locations so it cannot be copy-pasted onto a competitor's site.
+39. **Feature Authentic Photography:** Replace synthetic stock humans and abstract 3D graphics with real photos of your team, premises, and actual products.
+40. **Showcase Verified Social Proof:** Feature client testimonials that include full names, verified roles, company logos, and real faces.
+41. **Structure Content Around Buying Questions:** Sequence page sections to directly answer the natural questions buyers ask before purchasing.
+42. **Design with Realistic Content:** Use actual text lengths during wireframing to prevent layout breaks when real copy replaces placeholder text.
+43. **Remove Over-Explaining Copy:** Strip out unnecessary instructional paragraphs accompanying self-explanatory controls or cards.
+44. **Vary Sentence and Paragraph Rhythm:** Avoid monotonous sentence structures by mixing short and long phrases naturally.
+45. **Write Outcome-Focused Headlines:** Craft headlines that state the target audience and specific outcome achieved rather than broad platitudes.
+46. **Display Real UI Workflows:** Show high-resolution screenshots of actual software interfaces instead of stylized 3D floating dashboards.
+47. **Self-Host Brand Fonts:** Download and serve font files directly from your web server to protect visitor IP privacy.
+48. **Apply the TASL Attribution Framework:** When crediting third-party media, state Title, Author, Source, and Link while disclosing modifications.
+49. **Include Legal & Advice Disclaimers:** Clarify that website content is for informational purposes rather than professional guidance.
+50. **Maintain Geographical Content Localization:** Match spellings, currency symbols, address formats, and phone numbers to your target market.
+
+---
+
+### Conversion Rate Optimization & Customer Engagement
+
+51. **Position Social Proof Adjacent to CTAs:** Place client reviews or trust badges directly next to primary signup and checkout buttons to boost conversion.
+52. **Streamline Checkout & Signup Forms:** Eliminate non-essential input fields and implement inline validation to minimize form drop-off.
+53. **Deploy Micro-Interactions:** Add subtle, immediate visual feedback (like checkmark confirmations or progress bars) upon completing key tasks.
+54. **Implement Intelligent Site Search:** Integrate site-wide search powered by Natural Language Processing (NLP) to handle typos and conversational queries.
+55. **Use Specific Call-to-Action Labels:** Write action-oriented button text ("Get My Free Trial") rather than generic terms ("Submit").
+56. **Diversify Customer Contact Channels:** Provide multiple contact methods (chat, web forms, phone) to accommodate user preferences.
+57. **Actively Respond to Online Reviews:** Collect first- and third-party customer reviews and respond to them consistently to improve brand sentiment.
+58. **Maintain a Fresh Content/Resource Hub:** Regularly update blog posts and resource hubs focusing on specific audience pain points.
+59. **Publish Explicit E-Commerce Policies:** Clearly display refund, return, shipping, and tax policies prior to purchase.
+60. **Include a Dedicated "About Us" Page:** Build human connection by detailing your business background, team, and core values.
+61. **Provide Ample Touch Target Spacing:** Add generous padding between adjacent links and action buttons to prevent accidental clicks on mobile.
+62. **Display Business Verification Info:** Prominently post company addresses, phone numbers, and official registration numbers in the site footer.
+63. **Run A/B Tests on Key Pages:** Test variations of high-impact landing pages using event analytics before committing to full site overhauls.
+64. **Keep Main Navigation Predictable:** Organize primary navigation menus logically, enabling visitors to reach core pages within three clicks.
+65. **Provide Error Recovery Paths:** Write concise error modals that explain what happened, why, and offer a single direct CTA to try again.
+
+---
+
+### Performance, Technical Architecture & SEO
+
+66. **Enforce Sitewide HTTPS:** Automatically redirect all unencrypted HTTP requests to secure HTTPS across all routes and subdomains.
+67. **Optimize Core Web Vitals:** Maintain LCP under 2.5s, INP under 200ms, and minimize layout shifts (CLS) to satisfy search ranking factors.
+68. **Implement Schema Markup:** Embed structured schema data for videos, images, FAQs, and reviews to earn rich search snippets.
+69. **Build Mobile-First Layouts:** Ensure site layouts adapt dynamically down to 320px screen widths without horizontal scrollbars.
+70. **Structure Clean URLs:** Maintain short, descriptive, keyword-rich URL paths that reflect clear site hierarchy.
+71. **Deploy Content Security Policy (CSP):** Configure robust CSP headers to restrict unauthorized script execution and neutralize XSS vulnerabilities.
+72. **Utilize Multi-Layered Caching:** Deploy edge CDNs for static assets and Redis/Memcached for database queries to minimize latency.
+73. **Eliminate Mixed Content Warnings:** Ensure all passive images and active JavaScript assets load exclusively over HTTPS.
+74. **Enable HSTS Preloading:** Set `Strict-Transport-Security` headers with long `max-age` durations to force HTTPS connections.
+75. **Compress & Optimize Web Media:** Serve modern compressed image formats, enable lazy loading, and use responsive picture elements.
+76. **Maintain Semantic HTML Markup:** Structure page documents using proper semantic markup (`<header>`, `<main>`, `<nav>`, `<footer>`).
+77. **Optimize Content for Voice Queries:** Format FAQ sections and metadata using natural, long-tail conversational phrasing.
+78. **Decouple Content from Presentation:** Keep HTML structural content strictly separated from CSS presentation styles to optimize caching and multi-device delivery.
+79. **Implement API Versioning:** Version backend APIs (`/v1/`, `/v2/`) to prevent frontend interface breaks during upgrades.
+80. **Continuously Monitor Site Performance:** Track crash rates, load times, and network errors alongside session replays to identify regressions.
+
+---
+
+### Security, Credibility & Legal Compliance
+
+81. **Publish a Compliant Privacy Policy:** Maintain an easily accessible privacy policy outlining data collection, usage, and sharing, updating it annually.
+82. **Publish Terms of Service (ToS):** Post clear Terms of Use governing site rules, intellectual property rights, liability limits, and legal jurisdiction.
+83. **Deploy Affirmative Cookie Banners (GDPR):** Require explicit user opt-in consent before executing non-essential tracking cookies for EU visitors.
+84. **Provide Data Opt-Out Options (CCPA):** Include a clear "Do Not Sell or Share My Personal Information" link for U.S. visitors.
+85. **Meet WCAG 2.2 AA Conformance:** Audit and remediate website code to meet international web accessibility standards.
+86. **Maintain Minimum Color Contrast Ratios:** Ensure small text meets at least 4.5:1 contrast, large text meets 3:1, and UI controls meet 3:1 against backgrounds.
+87. **Ensure Full Keyboard Navigation:** Verify that all navigation links, buttons, and form controls are fully operable using a keyboard alone.
+88. **Provide High-Visibility Focus Rings:** Display clear visual focus indicators when navigating interactive controls via keyboard.
+89. **Provide Descriptive Alt Text for Images:** Include accurate `alt` text descriptions for all non-decorative imagery.
+90. **Label Form Fields Programmatically:** Use explicit `<label>` elements associated with form inputs rather than relying solely on visual placeholder text.
+91. **Publish an Accessibility Statement:** Post an accessibility statement detailing compliance standards met, known limitations, and contact details.
+92. **Hash Passwords Securely (Argon2id/Scrypt):** Store passwords using salted, cryptographically strong one-way hashing algorithms.
+93. **Enforce Server-Side Input Validation:** Validate all input fields server-side for syntax, data type, and length to block SQL injection and malicious scripts.
+94. **Protect API Keys and Tokens:** Keep private API keys out of client-side code bundles and store them securely in server environment variables.
+95. **Enable Row-Level Security (RLS):** Configure Row-Level Security on databases so client keys cannot access unauthorized rows.
+96. **Set Secure Cookie Flags (`HttpOnly` & `Secure`):** Configure session cookies with `HttpOnly` and `Secure` attributes to block script-based cookie theft.
+97. **Enforce Multi-Factor Authentication (MFA):** Require MFA for administrative dashboards and sensitive account management access.
+98. **Register a DMCA Designated Agent:** Register an official agent with the U.S. Copyright Office to protect safe harbor status for user content.
+99. **Comply with Anti-SPAM Laws (CAN-SPAM):** Include accurate email headers, a valid physical business address, and an instant opt-out mechanism in all marketing communications.
+100. **Display Clear Auto-Renewal Disclosures:** Present subscription prices, billing frequencies, and cancellation links directly adjacent to purchase buttons.
 
 ## 5. CODE
 ### Add the features listed below:
